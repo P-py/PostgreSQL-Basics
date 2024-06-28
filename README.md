@@ -133,14 +133,14 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
     - [x] Environment config and versions
     - [x] Creating and deleting databases
     - [x] Creating tables and deleting
-- [] CRUD operations
-    - [] Inserting operations
-    - [] Update operations
-    - [] Delete operations
-- [] SELECT operations with filters
-- [] Data and key relations
-- [] Using CASCADE
-- [] JOIN operations
+- [ ] CRUD operations
+    - [ ] Inserting operations
+    - [ ] Update operations
+    - [ ] Delete operations
+- [ ] SELECT operations with filters
+- [ ] Data and key relations
+- [ ] Using CASCADE
+- [ ] JOIN operations
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
