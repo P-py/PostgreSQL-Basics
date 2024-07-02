@@ -205,6 +205,7 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
     - [x] Environment config and versions
     - [x] Creating and deleting databases
     - [x] Creating tables and deleting
+<<<<<<< HEAD
 - [x] CRUD operations
     - [x] Inserting operations
     - [x] Update operations
@@ -214,6 +215,13 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
     - [x] Text filters
     - [ ]
     - [ ] AND / OR operators
+=======
+- [ ] CRUD operations
+    - [ ] Inserting operations
+    - [ ] Update operations
+    - [ ] Delete operations
+- [ ] SELECT operations with filters
+>>>>>>> c42747e036726368d9e29250eabb31b5060d3e14
 - [ ] Data and key relations
 - [ ] Using CASCADE
 - [ ] JOIN operations
