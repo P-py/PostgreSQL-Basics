@@ -91,6 +91,8 @@ Should return **something like (time will NOT be the same)**:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+Here are some generic cases of use for the PostgreSQL Basics, but **I do recommend using the complete .sql files in this repo, the list below is proposed only for DOCUMENTATION & STUDY PURPOSES.**
+
 ### Creating and deleting databases ([Class 01 file](./Class01-Firststeps.sql))
 ```sql
 CREATE DATABASE test;
@@ -193,6 +195,32 @@ To filter text we can use `%` or `_` operators, but they only work with `LIKE` o
 
 `_` - any single character 
 
+### Filtering null values
+```postgresql
+SELECT *
+	FROM athlete
+	WHERE param2 IS NULL;
+
+SELECT *
+	FROM table_name
+	WHERE param1 IS NOT NULL;
+```
+
+### Filters for numeric data
+We can use all the comparisons operators in the queries, for example: `!= / <>`, `=`, `<`, `<=`, `>`, `>=`. 
+```postgresql
+SELECT * 
+  FROM table_name
+  WHERE param2 > CAST(1.5 AS REAL);
+```
+
+It is also possible to use BETWEEN to query a specific range of values
+```postgresql
+SELECT *
+  FROM table_name
+  WHERE param2 BETWEEN CAST(1.5 AS REAL) AND CAST(2.5 AS REAL);
+```
+
 _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql.org/docs/16/index.html)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -205,7 +233,6 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
     - [x] Environment config and versions
     - [x] Creating and deleting databases
     - [x] Creating tables and deleting
-<<<<<<< HEAD
 - [x] CRUD operations
     - [x] Inserting operations
     - [x] Update operations
@@ -213,15 +240,8 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
 - [] SELECT operations with filters
     - [x] Specific columns
     - [x] Text filters
-    - [ ]
+    - [ ] Numeric, data and boolean filters
     - [ ] AND / OR operators
-=======
-- [ ] CRUD operations
-    - [ ] Inserting operations
-    - [ ] Update operations
-    - [ ] Delete operations
-- [ ] SELECT operations with filters
->>>>>>> c42747e036726368d9e29250eabb31b5060d3e14
 - [ ] Data and key relations
 - [ ] Using CASCADE
 - [ ] JOIN operations
