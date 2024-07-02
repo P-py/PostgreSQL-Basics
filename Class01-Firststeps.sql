@@ -15,16 +15,20 @@ date
 time
 timestamp
 
+CREATE DATABASE stats_basketball;
+
 CREATE TABLE athlete(
 	id SERIAL PRIMARY KEY,
-	athleteName VARCHAR(255),
-	jerseyNumber CHAR(2),
+	athlete_name VARCHAR(255),
+	jersey_number CHAR(2),
 	bio TEXT,
 	age INTEGER,
 	height REAL,
 	active BOOLEAN,
-	birthDate DATE,
-	proDebut TIMESTAMP
+	birth_date DATE,
+	pro_debut TIMESTAMP
 );
 
 SELECT * FROM athlete;
+
+DROP TABLE athlete;

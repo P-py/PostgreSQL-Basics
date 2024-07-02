@@ -91,12 +91,12 @@ Should return **something like (time will NOT be the same)**:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-### Creating and deleting databases
+### Creating and deleting databases ([Class 01 file](./Class01-Firststeps.sql))
 ```sql
 CREATE DATABASE test;
 DROP DATABASE test;
 ```
-### Listing databases (from psql shell)
+### Listing databases (from psql shell) ([Class 01 file](./Class01-Firststeps.sql))
 ```sql
 postgres=# \l
                                                                       Lista de bancos de dados
@@ -109,7 +109,7 @@ postgres=# \l
            |          |             |                        |                        |                        |                |            | postgres=CTc/postgres
 (3 linhas)
 ```
-### PostgreSQL Datatypes
+### PostgreSQL Datatypes ([Class 01 file](./Class01-Firststeps.sql))
 - SERIAL - Autoincrementing integer
 - VARCHAR - Variable length range char data
 - CHAR - Defined length char data
@@ -120,6 +120,78 @@ postgres=# \l
 - DATE - Date format including years, months and days
 - TIME - Time format including only time metrics
 - TIMESTAMP - Time format including year, months, days, hours, minutes, seconds, milliseconds and timezone 
+
+### Creating and deleting tables in a database ([Class 01 file](./Class01-Firststeps.sql))
+```postgresql
+CREATE TABLE table_name(
+  id SERIAL PRIMARY KEY,
+  param1 TEXT,
+  param2 REAL
+  -- other fields
+);
+SELECT * FROM table_name;
+DROP TABLE table_name;
+```
+
+### CRUD Operations ([Class 02 file](./Class02-CRUD.sql))
+```postgresql
+-- Create  
+INSERT INTO table_name(param1, param2)
+  VALUES ('value_param1', 2.5);
+```
+```postgresql
+-- Read
+SELECT * FROM table_name;
+
+SELECT id
+  FROM table_name
+  WHERE param1 = 'value_param1';
+
+SELECT id
+  FROM table_name
+  WHERE param2 = CAST(2.5 AS REAL);
+
+SELECT * FROM table_name
+  WHERE (param1, param2) IN (SELECT param1, param2 FROM table_name WHERE param1 = 'param1_value' AND param2 = CAST(2.5 AS REAL));
+```
+```postgresql
+-- Update
+UPDATE athlete 
+	SET param1 = 'new_value_param1', param2 = CAST(5.0 AS REAL)
+	WHERE id IN (SELECT * FROM table_name WHERE param2 = CAST(2.5 AS REAL));
+```
+```postgresql
+-- Delete
+DELETE FROM table_name
+  WHERE id IN (SELECT * FROM table_name WHERE param2 = CAST(5.0 AS REAL))
+  RETURNING *;
+```
+
+### Selecting specific columns and changing their name presentation ([Class 03 file](Class03-Selectfilters.sql))
+```postgresql
+SELECT 
+  id AS Register,
+  param1 AS Title,
+  param2 AS "Value of"
+  FROM table_name;
+```
+The double quotes are used to names that have whitespaces.
+```postgresql
+SELECT *
+  FROM table_name
+  WHERE id != 1;
+```
+Returns only the lines where id is different than 1, `!=` could be replaced with `<>`.
+```postgresql
+SELECT *
+  FROM table_name
+  WHERE param1 LIKE '%param1'
+```
+To filter text we can use `%` or `_` operators, but they only work with `LIKE` operator, and will not function with `=` comparisons.
+
+`%` - any text
+
+`_` - any single character 
 
 _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql.org/docs/16/index.html)_
 
@@ -133,14 +205,18 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
     - [x] Environment config and versions
     - [x] Creating and deleting databases
     - [x] Creating tables and deleting
-- [] CRUD operations
-    - [] Inserting operations
-    - [] Update operations
-    - [] Delete operations
+- [x] CRUD operations
+    - [x] Inserting operations
+    - [x] Update operations
+    - [x] Delete operations
 - [] SELECT operations with filters
-- [] Data and key relations
-- [] Using CASCADE
-- [] JOIN operations
+    - [x] Specific columns
+    - [x] Text filters
+    - [ ]
+    - [ ] AND / OR operators
+- [ ] Data and key relations
+- [ ] Using CASCADE
+- [ ] JOIN operations
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -185,7 +261,7 @@ Project Link: [https://github.com/P-py/CineSearch](https://github.com/P-py/CineS
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+Nice docs and content related:
 
 * [Curso de PostgreSQL](https://cursos.alura.com.br/course/introducao-postgresql-primeiros-passos)
 * [PostgreSQL Docs - Chapter 8: Data types](https://www.postgresql.org/docs/16/datatype.html)
