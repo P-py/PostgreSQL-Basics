@@ -124,7 +124,7 @@ postgres=# \l
 - TIMESTAMP - Time format including year, months, days, hours, minutes, seconds, milliseconds and timezone 
 
 ### Creating and deleting tables in a database ([Class 01 file](./Class01-Firststeps.sql))
-```postgresql
+```sql
 CREATE TABLE table_name(
   id SERIAL PRIMARY KEY,
   param1 TEXT,
@@ -136,12 +136,12 @@ DROP TABLE table_name;
 ```
 
 ### CRUD Operations ([Class 02 file](./Class02-CRUD.sql))
-```postgresql
+```sql
 -- Create  
 INSERT INTO table_name(param1, param2)
   VALUES ('value_param1', 2.5);
 ```
-```postgresql
+```sql
 -- Read
 SELECT * FROM table_name;
 
@@ -156,13 +156,13 @@ SELECT id
 SELECT * FROM table_name
   WHERE (param1, param2) IN (SELECT param1, param2 FROM table_name WHERE param1 = 'param1_value' AND param2 = CAST(2.5 AS REAL));
 ```
-```postgresql
+```sql
 -- Update
 UPDATE table_name
 	SET param1 = 'new_value_param1', param2 = CAST(5.0 AS REAL)
 	WHERE id IN (SELECT * FROM table_name WHERE param2 = CAST(2.5 AS REAL));
 ```
-```postgresql
+```sql
 -- Delete
 DELETE FROM table_name
   WHERE id IN (SELECT * FROM table_name WHERE param2 = CAST(5.0 AS REAL))
@@ -170,7 +170,7 @@ DELETE FROM table_name
 ```
 
 ### Selecting specific columns and changing their name presentation ([Class 03 file](Class03-Selectfilters.sql))
-```postgresql
+```sql
 SELECT 
   id AS Register,
   param1 AS Title,
@@ -178,13 +178,13 @@ SELECT
   FROM table_name;
 ```
 The double quotes are used to names that have whitespaces.
-```postgresql
+```sql
 SELECT *
   FROM table_name
   WHERE id != 1;
 ```
 Returns only the rows where id is different than 1, `!=` could be replaced with `<>`.
-```postgresql
+```sql
 SELECT *
   FROM table_name
   WHERE param1 LIKE '%param1'
@@ -196,7 +196,7 @@ To filter text we can use `%` or `_` operators, but they only work with `LIKE` o
 `_` - any single character 
 
 ### Filtering null values ([Class 03 file](Class03-Selectfilters.sql))
-```postgresql
+```sql
 SELECT *
 	FROM table_name
 	WHERE param2 IS NULL;
@@ -208,13 +208,13 @@ SELECT *
 
 ### Filters for numeric data ([Class 03 file](Class03-Selectfilters.sql))
 We can use all the comparisons operators in the queries, for example: `!= / <>`, `=`, `<`, `<=`, `>`, `>=`. 
-```postgresql
+```sql
 SELECT * 
   FROM table_name
   WHERE param2 > CAST(1.5 AS REAL);
 ```
 It is also possible to use BETWEEN to query a specific range of values
-```postgresql
+```sql
 SELECT *
   FROM table_name
   WHERE param2 BETWEEN CAST(1.5 AS REAL) AND CAST(2.5 AS REAL);
@@ -225,14 +225,14 @@ As said in the [PostgreSQL Docs](https://www.postgresql.org/docs/16/index.html) 
 
 Primary keys should always be UNIQUE and NOT NULL, that's what the PRIMARY KEY operator implements in a database entity.
 
-```postgresql
+```sql
 CREATE TABLE table2_name(
   id SERIAL PRIMARY KEY
 )
 ```
 
 It is also possible to compose keys like shown below:
-```postgresql
+```sql
 CREATE TABLE table2_name(
   table2_entity_id INTEGER,
   table1_entity_id INTEGER,
@@ -246,11 +246,11 @@ INSERT INTO table2_name(table2_entity_id, table1_entity_id) VALUES (1, 1); --Pri
 INSERT INTO table2_name(table2_entity_id, table1_entity_id) VALUES (1, 1); --Would return successfull query
 ```
 
-### Foreign keys and relating different tables
+### Foreign keys and relating different tables ([Class 04 file](Class04-Relations.sql))
 Foreign keys are essential to guarantee that a foreign table entity exists before it is related to in a different table.
 
 To create a foreign key:
-```postgresql
+```sql
 CREATE TABLE table2_name(
   id SERIAL PRIMARY KEY,
   table1_entity_id INTEGER,
@@ -261,7 +261,7 @@ CREATE TABLE table2_name(
 
 INSERT INTO table2_name(1, 'TEST');
 ```
-### Basic JOINs for selecting a field in a foreign table
+### Basic JOINs for selecting a field in a foreign table ([Class 04 file](Class04-Relations.sql))
 ```sql
 SELECT table2_name.*, table_name.param2
   FROM table2_name  
@@ -272,7 +272,7 @@ SELECT table2_name.*, table_name.param2
 -- 1  |        1         | TEST  |  5.0   |
 ```
 
-### Different types of joins (LEFT, RIGHT, CROSS, FULL)
+### Different types of joins (LEFT, RIGHT, CROSS, FULL, INNER) - Examples @ [Class 04 file](Class04-Relations.sql)
 In some cases, rows of the column that doesn't relate to other tables can be hidden in a SELECT query, considering that the're not in the join cases - that example can be observed in the SELECT + JOIN query above, rows in the `table_name` table that aren't related in any rows in `table2_name` won't appear. 
 
 A `LEFT JOIN` considers that the data/row may not exist on the right side (**secondary table of the query, table_name in the case above**) of the query. Visual example from the [W3Schools website](https://www.w3schools.com/sql):
@@ -283,11 +283,87 @@ A `RIGHT JOIN` considers that the data/row may not exist on the **main table of 
 
 ![W3Schools right join example](https://www.w3schools.com/sql/img_right_join.png)
 
+A `FULL JOIN` returns all the cases that rows exist in either of the tables.
+
+![W3Schools full join example](https://www.w3schools.com/sql/img_full_outer_join.png)
+
+`INNER JOIN` queries will return only matching cases.
+
+![W3Schools inner join example](https://www.w3schools.com/sql/img_inner_join.png)
+
+At last, `CROSS JOIN` will multiply all the cases of existing rows on the left table with right table, meaning that if you have 3 rows in each table, the return data will be a table containing 9 rows, **for each possible case**.
+
+### Cascade ([Class 04 file](Class04-Relations.sql))
+Default database configurations restrict you from editing (updating, deleting) rows that have external relations to the tables where they are at - that is a constraint property. 
+
+The configuration of that constraint is made via `ON DELETE RESTRICT` in a hidden way when the table is created.
+
+From the [W3Schools website](https://www.w3schools.com/sql) and [PostgreSQL Docs](https://www.postgresql.org/docs/16/index.html): 
+
+> "CASCADE is used to update or remove an entry from both the parent and child tables at the same time. The ON DELETE or ON UPDATE query uses the phrase CASCADE as a conjunction"
+
+> CASCADE specifies that when a referenced row is deleted, row(s) referencing it should be automatically deleted as well
+
+The property should be used in the creation step of a table:
+```sql
+CREATE TABLE table2_name(
+  id SERIAL PRIMARY KEY,
+  table1_entity_id INTEGER,
+  param TEXT,
+  FOREIGN KEY (table1_entity_id)
+    REFERENCES table_name(id)
+    ON DELETE CASCADE
+);
+```
+**The same property can be used in update cases with `ON UPDATE CASCADE`**.
+
+### Order property on queries ([Class 06 file](Class06-AdvancedQueries.sql))
+The `ORDER BY` operator is used to order a data output of a query, it can be used with any corresponding row of the table where the select query is being runned. 
+
+```sql
+SELECT table2_name.*, table_name.param2
+  FROM table2_name  
+  JOIN table_name ON table2_name.table1_entity_id = table_name.id
+  ORDER BY param2
+```
+
+In this example, the `ORDER BY param2` can be replaced by `ORDER BY 3`, considering the param2 is the third column on the table.
+
+We can also add modifying operators like `ASC` for ascending order or `DESC` for descending order.
+
+### Limiting queries return ([Class 06 file](Class06-AdvancedQueries.sql))
+Using the `LIMIT` operator:
+```sql
+SELECT table2_name.*, table_name.param2
+  FROM table2_name  
+  JOIN table_name ON table2_name.table1_entity_id = table_name.id
+  ORDER BY param2
+  LIMIT 3;
+```
+Will return only 3 rows on Data Output.
+
+### Other modifiers on queries ([Class 06 file](Class06-AdvancedQueries.sql))
+* `COUNT`
+* `SUM`
+* `MAX`
+* `MIN`
+* `AVG`
+* `DISTINCT` - Returns only rows that have different data.
+* `GROUP BY` - Returns repeated data in a group row, can be used with count to know how many duplicates there are:
+  ```sql
+  SELECT
+    param1
+    param2
+    COUNT(id)
+  FROM table_name
+  GROUP BY param1
+  ORDER BY param1
+  ```
+* `HAVING` - WHERE statement to be used with `GROUP BY`
+
 _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql.org/docs/16/index.html)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -308,11 +384,17 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
     - [x] Primary keys
     - [x] Foreign keys and relations
 - [x] JOIN operations
-- [ ] Using CASCADE
-
+    - [x] Difference between RIGHT, LEFT, FULL, CROSS, INNER
+- [x] Using CASCADE
+    - [x] Cascade vs Restrict
+    - [x] On update
+    - [x] On delete
+- [x] Advanced queries and modifiers
+    - [x] ORDER BY
+    - [x] LIMIT
+    - [x] COUNT, SUM, MAX, MIN, AVG
+    - [x] GROUP BY
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -337,8 +419,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
 ## Contact
 
@@ -349,7 +429,6 @@ Project Link: [https://github.com/P-py/PostgreSQL-Basics](https://github.com/P-p
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
@@ -357,6 +436,7 @@ Nice docs and content related:
 
 * [Curso de PostgreSQL](https://cursos.alura.com.br/course/introducao-postgresql-primeiros-passos)
 * [PostgreSQL Docs - Chapter 8: Data types](https://www.postgresql.org/docs/16/datatype.html)
+* [PostgreSQL Docs - Chapter 5: Data definition](https://www.postgresql.org/docs/current/ddl-constraints.html)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -43,4 +43,18 @@ UPDATE athlete
 
 SELECT athlete.*, teams.team_name
 	FROM athlete
-	JOIN teams ON teams.id = athlete.last_team_id
+	JOIN teams ON teams.id = athlete.last_team_id;
+
+UPDATE athlete
+	SET last_team_id = null
+	WHERE athlete_name LIKE '% Jordan';
+
+-- As a right join will return all teams listed, even though the Chicago Bulls doesn't have a player related to it
+SELECT athlete.*, teams.team_name
+	FROM athlete
+	RIGHT JOIN teams ON teams.id = athlete.last_team_id;
+
+-- As a left join will return all players listed, even the ones that don't have a team related, like Michael Jordan in this case
+SELECT athlete.*, teams.team_name
+	FROM athlete
+	LEFT JOIN teams ON teams.id = athlete.last_team_id;
