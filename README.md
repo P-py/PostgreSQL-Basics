@@ -158,7 +158,7 @@ SELECT * FROM table_name
 ```
 ```postgresql
 -- Update
-UPDATE athlete 
+UPDATE table_name
 	SET param1 = 'new_value_param1', param2 = CAST(5.0 AS REAL)
 	WHERE id IN (SELECT * FROM table_name WHERE param2 = CAST(2.5 AS REAL));
 ```
@@ -183,7 +183,7 @@ SELECT *
   FROM table_name
   WHERE id != 1;
 ```
-Returns only the lines where id is different than 1, `!=` could be replaced with `<>`.
+Returns only the rows where id is different than 1, `!=` could be replaced with `<>`.
 ```postgresql
 SELECT *
   FROM table_name
@@ -195,10 +195,10 @@ To filter text we can use `%` or `_` operators, but they only work with `LIKE` o
 
 `_` - any single character 
 
-### Filtering null values
+### Filtering null values ([Class 03 file](Class03-Selectfilters.sql))
 ```postgresql
 SELECT *
-	FROM athlete
+	FROM table_name
 	WHERE param2 IS NULL;
 
 SELECT *
@@ -206,20 +206,82 @@ SELECT *
 	WHERE param1 IS NOT NULL;
 ```
 
-### Filters for numeric data
+### Filters for numeric data ([Class 03 file](Class03-Selectfilters.sql))
 We can use all the comparisons operators in the queries, for example: `!= / <>`, `=`, `<`, `<=`, `>`, `>=`. 
 ```postgresql
 SELECT * 
   FROM table_name
   WHERE param2 > CAST(1.5 AS REAL);
 ```
-
 It is also possible to use BETWEEN to query a specific range of values
 ```postgresql
 SELECT *
   FROM table_name
   WHERE param2 BETWEEN CAST(1.5 AS REAL) AND CAST(2.5 AS REAL);
 ```
+
+### Keys, constraints and references ([Class 04 file](Class04-Relations.sql))
+As said in the [PostgreSQL Docs](https://www.postgresql.org/docs/16/index.html) - "A primary key constraint indicates that a column, or group of columns, can be used as a unique identifier for rows in the table."
+
+Primary keys should always be UNIQUE and NOT NULL, that's what the PRIMARY KEY operator implements in a database entity.
+
+```postgresql
+CREATE TABLE table2_name(
+  id SERIAL PRIMARY KEY
+)
+```
+
+It is also possible to compose keys like shown below:
+```postgresql
+CREATE TABLE table2_name(
+  table2_entity_id INTEGER,
+  table1_entity_id INTEGER,
+  PRIMARY KEY (table2_entity_id, table1_entity_id)
+);
+
+INSERT INTO table2_name(table2_entity_id, table1_entity_id) VALUES (1, 1); --Returns successfull query
+
+INSERT INTO table2_name(table2_entity_id, table1_entity_id) VALUES (1, 1); --Primary keys can't be repeated, so this query executed after the query above will return error.
+
+INSERT INTO table2_name(table2_entity_id, table1_entity_id) VALUES (1, 1); --Would return successfull query
+```
+
+### Foreign keys and relating different tables
+Foreign keys are essential to guarantee that a foreign table entity exists before it is related to in a different table.
+
+To create a foreign key:
+```postgresql
+CREATE TABLE table2_name(
+  id SERIAL PRIMARY KEY,
+  table1_entity_id INTEGER,
+  param TEXT,
+  FOREIGN KEY (table1_entity_id)
+    REFERENCES table_name(id)
+);
+
+INSERT INTO table2_name(1, 'TEST');
+```
+### Basic JOINs for selecting a field in a foreign table
+```sql
+SELECT table2_name.*, table_name.param2
+  FROM table2_name  
+  JOIN table_name ON table2_name.table1_entity_id = table_name.id
+
+-- Should return
+-- id | table1_entity_id | param | param2 |
+-- 1  |        1         | TEST  |  5.0   |
+```
+
+### Different types of joins (LEFT, RIGHT, CROSS, FULL)
+In some cases, rows of the column that doesn't relate to other tables can be hidden in a SELECT query, considering that the're not in the join cases - that example can be observed in the SELECT + JOIN query above, rows in the `table_name` table that aren't related in any rows in `table2_name` won't appear. 
+
+A `LEFT JOIN` considers that the data/row may not exist on the right side (**secondary table of the query, table_name in the case above**) of the query. Visual example from the [W3Schools website](https://www.w3schools.com/sql):
+
+![W3Schools left join example](https://www.w3schools.com/sql/img_left_join.png)
+
+A `RIGHT JOIN` considers that the data/row may not exist on the **main table of the query, table2_name in the case above** of the query. Visual example from the [W3Schools website](https://www.w3schools.com/sql):
+
+![W3Schools right join example](https://www.w3schools.com/sql/img_right_join.png)
 
 _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql.org/docs/16/index.html)_
 
@@ -237,14 +299,16 @@ _For more examples, please refer to the [PostgreSQL Docs](https://www.postgresql
     - [x] Inserting operations
     - [x] Update operations
     - [x] Delete operations
-- [] SELECT operations with filters
+- [x] SELECT operations with filters
     - [x] Specific columns
     - [x] Text filters
-    - [ ] Numeric, data and boolean filters
-    - [ ] AND / OR operators
-- [ ] Data and key relations
+    - [x] Numeric, data and boolean filters
+    - [x] AND / OR operators
+- [x] Data and key relations
+    - [x] Primary keys
+    - [x] Foreign keys and relations
+- [x] JOIN operations
 - [ ] Using CASCADE
-- [ ] JOIN operations
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -280,7 +344,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Pedro Santos - pedrosalviano170@gmail.com
 
-Project Link: [https://github.com/P-py/CineSearch](https://github.com/P-py/CineSearch)
+Project Link: [https://github.com/P-py/PostgreSQL-Basics](https://github.com/P-py/PostgreSQL-Basics)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
